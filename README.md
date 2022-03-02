@@ -2,7 +2,7 @@
 
 这是一个测试项目，可能会有不可预测的事情发生（比如：毁损数据、烧毁硬件等等），请**谨慎使用**。
 
-[English](README_EN.md "English")
+[English](README_en.md "English")
 
 感谢 @haydibe 提供 RedPill Tool Chain
 
@@ -111,6 +111,9 @@ bromolow-7.0.1-42218
 apollolake-6.2.4-25556
 apollolake-7.0-41890
 apollolake-7.0.1-42218
+broadwell-7.0.1-42218
+broadwellnk-7.0.1-42218
+geminilake-7.0.1-42218
 
 Custom Extensions:
 ---------------------
@@ -118,3 +121,7 @@ pocopico.mpt3sas
 thethorgroup.boot-wait
 thethorgroup.virtio
 ```
+
+## 更多细节
+
+查看[test.yml](https://github.com/tossp/redpill-tool-chain/blob/e7ed920171194f35e577990809a167baa0b9d48c/.github/workflows/test.yml)文件
