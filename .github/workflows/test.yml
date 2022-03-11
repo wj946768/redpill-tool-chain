@@ -1,4 +1,4 @@
-name: 测试构建
+name: 构建
 
 on:
   push:
@@ -13,24 +13,26 @@ jobs:
       matrix:
        include:
       #  两行一组，删除不需要的版本
-        # - platform: bromolow
-        #   version: 6.2.4-25556
-        # - platform: bromolow
-        #   version: 7.0-41222
-         - platform: bromolow
+      #   - platform: ds3615xs
+      #     version: 6.2.4-25556
+      #   - platform: ds3615xs
+      #     version: 7.0-41222
+         - platform: ds3615xs
            version: 7.0.1-42218
-        # - platform: apollolake
-        #   version: 6.2.4-25556
-        # - platform: apollolake
-        #   version: 7.0-41890
-         - platform: apollolake
+      #   - platform: ds918p
+      #     version: 6.2.4-25556
+      #   - platform: ds918p
+      #     version: 7.0-41890
+         - platform: ds918p
            version: 7.0.1-42218
-         - platform: broadwell
+         - platform: ds3617xs
            version: 7.0.1-42218
-         - platform: broadwellnk
+         - platform: ds3622xsp
            version: 7.0.1-42218
-        # - platform: geminilake
-        #   version: 7.0.1-42218
+         - platform: ds920p
+           version: 7.0.1-42218
+         - platform: ds1621p
+           version: 7.0.1-42218
 
     steps:
       - name: 检出项目文件
@@ -77,7 +79,7 @@ jobs:
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-misc/rpext-index.json
 
       - name: 添加 jumkey.dtb !!!Create your own device tree binary!!!
-        if: matrix.platform == 'geminilake'
+        if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: |
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-dtb/rpext-index.json
           echo '!!!Create your own device tree binary!!!'
@@ -91,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: dsm-${{matrix.platform}}-${{matrix.version}}
-          path: images/redpill-DS[39]*.img
+          path: images/redpill-DS[139]*.img
           if-no-files-found: error
 
       - name: 删除旧的工作流
