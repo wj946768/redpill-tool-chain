@@ -1,8 +1,14 @@
 name: 构建
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - 'docker/**'
+      - '**.sh'
+      - '**.json'
 
 jobs:
   build:
@@ -13,10 +19,10 @@ jobs:
       matrix:
        include:
       #  两行一组，删除不需要的版本
-      #   - platform: ds3615xs
-      #     version: 6.2.4-25556
-      #   - platform: ds3615xs
-      #     version: 7.0-41222
+         - platform: ds3615xs
+           version: 6.2.4-25556
+         - platform: ds3615xs
+           version: 7.0-41222
          - platform: ds3615xs
            version: 7.0.1-42218
       #   - platform: ds918p
@@ -32,6 +38,8 @@ jobs:
       #   - platform: ds920p
       #     version: 7.0.1-42218
          - platform: ds1621p
+           version: 7.0.1-42218
+         - platform: dva3221
            version: 7.0.1-42218
 
     steps:
@@ -55,26 +63,36 @@ jobs:
           cp sample_user_config.json ${{matrix.platform}}_user_config.json
 
           # 调整VID和PID
-          sed -i -e 's\0x0001\0x0002\g' -e 's\0x46f4\0x0002\g' ${{matrix.platform}}_user_config.json
+          sed -i -e 's/0x0001/0x88AA/g' -e 's/0x46f4/0x88AA/g' ${{matrix.platform}}_user_config.json
 
           # 调整SN和MAC 最好使用 actions secrets 引入
-          sed -i -e 's\1234XXX123\0123456789\g' -e 's\XXYYXXYYXXYY\00AAAAAAAAAA\g' ${{matrix.platform}}_user_config.json
+          sn=`./redpill_tool_chain.sh sn ${{matrix.platform}} | grep 'Serial Number' | awk '{print $3}'`
+          sed -i -e "s/1234XXX123/${sn:="1130LWN123456"}/g" -e 's/XXYYXXYYXXYY/0011323D47F7/g' ${{matrix.platform}}_user_config.json
 
           # 添加第二张网卡mac并设置网卡数量
-          sed -i -e 's/00AAAAAAAAAA"/&,\n\t"mac2": "00BBBBBBBBBB",\n\t"netif_num": 4/' ${{matrix.platform}}_user_config.json
+          sed -i -e 's/0011323D47F7"/&,\n\t"mac2": "0011323D47F8",\n\t"netif_num": 4/' ${{matrix.platform}}_user_config.json
 
           # 调整synoinfo
           sed -i -e 's/"synoinfo": {},/"synoinfo": {\n\t"maxlanport": "4"\n    },/' ${{matrix.platform}}_user_config.json
 
-          # 添加扩展驱动
+          cat ${{matrix.platform}}_user_config.json
+
+      - name: 添加扩展驱动
+        if: matrix.platform != 'dva3221'
+        run: |
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/rpext-index.json
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-virtio/rpext-index.json
           # Network driver
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json
           #./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/rpext-index.json
 
+      - name: 添加扩展驱动[dva3221]
+        if: matrix.platform == 'dva3221'
+        run: |
+          echo '等待整理兼容性扩展~😀'
+
       - name: 添加 jumkey.misc
-        if: endsWith(matrix.version,'42218')
+        if: endsWith(matrix.version,'42218') && matrix.platform != 'dva3221'
         run: |
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-misc/rpext-index.json
 
@@ -93,7 +111,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: dsm-${{matrix.platform}}-${{matrix.version}}
-          path: images/redpill-DS[139]*.img
+          path: images/redpill-*.img
           if-no-files-found: error
 
       - name: 删除旧的工作流
