@@ -19,10 +19,10 @@ jobs:
       matrix:
        include:
       #  两行一组，删除不需要的版本
-         - platform: ds3615xs
-           version: 6.2.4-25556
-         - platform: ds3615xs
-           version: 7.0-41222
+      #   - platform: ds3615xs
+      #     version: 6.2.4-25556
+      #   - platform: ds3615xs
+      #     version: 7.0-41222
          - platform: ds3615xs
            version: 7.0.1-42218
       #   - platform: ds918p
@@ -62,15 +62,15 @@ jobs:
         run: |
           cp sample_user_config.json ${{matrix.platform}}_user_config.json
 
-          # 调整VID和PID
-          sed -i -e 's/0x0001/0x88AA/g' -e 's/0x46f4/0x88AA/g' ${{matrix.platform}}_user_config.json
+          # 调整VID和PID, PVE or Unraid don't need this.
+          # sed -i -e 's/0x0001/0x88AA/g' -e 's/0x46f4/0x88AA/g' ${{matrix.platform}}_user_config.json
 
           # 调整SN和MAC 最好使用 actions secrets 引入
           sn=`./redpill_tool_chain.sh sn ${{matrix.platform}} | grep 'Serial Number' | awk '{print $3}'`
           sed -i -e "s/1234XXX123/${sn:="1130LWN123456"}/g" -e 's/XXYYXXYYXXYY/0011323D47F7/g' ${{matrix.platform}}_user_config.json
 
           # 添加第二张网卡mac并设置网卡数量
-          sed -i -e 's/0011323D47F7"/&,\n\t"mac2": "0011323D47F8",\n\t"netif_num": 4/' ${{matrix.platform}}_user_config.json
+          sed -i -e 's/0011323D47F7"/&,\n\t"netif_num": 4/' ${{matrix.platform}}_user_config.json
 
           # 调整synoinfo
           sed -i -e 's/"synoinfo": {},/"synoinfo": {\n\t"maxlanport": "4"\n    },/' ${{matrix.platform}}_user_config.json
@@ -82,6 +82,7 @@ jobs:
         run: |
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/rpext-index.json
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-virtio/rpext-index.json
+          ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-boot-wait/rpext-index.json
           # Network driver
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json
           #./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/rpext-index.json
