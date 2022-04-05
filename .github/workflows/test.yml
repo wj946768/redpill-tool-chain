@@ -85,8 +85,12 @@ jobs:
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-boot-wait/rpext-index.json
           # Network driver
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json
-          #./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/rpext-index.json
 
+      - name: 添加扩展驱动[r8152]
+        if: matrix.platform == 'ds3615xs' || matrix.platform == 'ds918p' || matrix.platform == 'ds3622xsp' || matrix.platform == 'dva3221'
+        run: |
+          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/rpext-index.json
+          
       - name: 添加扩展驱动[dva3221]
         if: matrix.platform == 'dva3221'
         run: |
