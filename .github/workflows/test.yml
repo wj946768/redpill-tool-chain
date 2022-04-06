@@ -106,18 +106,27 @@ jobs:
         run: |
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-dtb/rpext-index.json
           echo '!!!Create your own device tree binary!!!'
-          ls custom/extensions
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
+
+      - name: 编译引导镜像
+        run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
+
+      - name: 修改 jumkey.dtb
+        if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
+        run: |
           cd custom/extensions/jumkey.dtb
           ls
           chmod +x dtc
           dtc -I dtb -O dts -o output.dts model_ds920p.dtb
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
+          cat output.dts
           dtc -I dts -O dtb -o model_ds920p.dtb output.dts
+          cd /
+          ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
       - name: 编译引导镜像
         run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
-
+        
       - name: 上传引导镜像到 github actions
         uses: actions/upload-artifact@v2
         with:
