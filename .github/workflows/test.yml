@@ -114,7 +114,7 @@ jobs:
       - name: 修改 jumkey.dtb 并再编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: |
-          cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{matrix.version}}
+          cd custom/extensions/jumkey.dtb/${{matrix.platform}}_42218
           ls
           chmod +x dtc
           dtc -I dtb -O dts -o output.dts model_ds920p.dtb
