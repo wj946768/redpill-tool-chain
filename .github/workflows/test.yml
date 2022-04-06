@@ -106,7 +106,7 @@ jobs:
         run: |
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-dtb/rpext-index.json
           echo '!!!Create your own device tree binary!!!'
-          ls custom/extentions
+          ls custom/extensions
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
           cd custom/extensions/jumkey.dtb
           ls
