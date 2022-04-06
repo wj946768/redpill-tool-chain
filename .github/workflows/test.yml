@@ -111,7 +111,7 @@ jobs:
       - name: 编译引导镜像
         run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
-      - name: 修改 jumkey.dtb
+      - name: 修改 jumkey.dtb 并再编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: |
           cd custom/extensions/jumkey.dtb
@@ -123,9 +123,6 @@ jobs:
           dtc -I dts -O dtb -o model_ds920p.dtb output.dts
           cd /
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
-
-      - name: 编译引导镜像
-        run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
         uses: actions/upload-artifact@v2
