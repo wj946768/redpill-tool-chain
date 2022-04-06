@@ -107,7 +107,7 @@ jobs:
           ./redpill_tool_chain.sh add https://github.com/jumkey/redpill-load/raw/develop/redpill-dtb/rpext-index.json
           echo '!!!Create your own device tree binary!!!'
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
-          sed -i -e 's/0011323D47F7"/&,\n\t"SataPortMap": "62"，\n\t"DiskIdxMap": "0002"，/' ${{matrix.platform}}_user_config.json
+          sed -i -e 's/0011323D47F7",/&,\n\t"SataPortMap": "62",\n\t"DiskIdxMap": "0002",/' ${{matrix.platform}}_user_config.json
           cat ${{matrix.platform}}_user_config.json
 
       - name: 编译引导镜像
