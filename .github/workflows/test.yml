@@ -111,7 +111,7 @@ jobs:
       - name: 编译引导镜像
         run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
-      - name: 修改 jumkey.dtb 并再编译
+      - name: 修改 jumkey.dtb
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: |
           cd custom/extensions/jumkey.dtb/${{matrix.platform}}_42218
@@ -125,7 +125,9 @@ jobs:
           
       - name: jumkey.dtb 再编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
-        run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
+        run: |
+          rm -rf images/redpill-*.img
+          ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
         uses: actions/upload-artifact@v2
