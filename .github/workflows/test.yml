@@ -115,14 +115,13 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: |
           cd custom/extensions/jumkey.dtb/${{matrix.platform}}_42218
-          ls
           sudo chmod -R 777 ./
           sudo chmod +x dtc
-          cp dtc /usr/sbin/dtc
-          dtc -I dtb -O dts -o output.dts model_ds920p.dtb
+          ls
+          ./dtc -I dtb -O dts -o output.dts model_ds920p.dtb
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
           cat output.dts
-          dtc -I dts -O dtb -o model_ds920p.dtb output.dts
+          ./dtc -I dts -O dtb -o model_ds920p.dtb output.dts
           cd /
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
