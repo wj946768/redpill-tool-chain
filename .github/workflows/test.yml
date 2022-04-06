@@ -123,7 +123,7 @@ jobs:
           rm -rf model_ds920p.dtb
           ./dtc -I dts -O dtb -o model_ds920p.dtb output.dts
           
-       - name: 修改 jumkey.dtb 并再编译
+      - name: jumkey.dtb 再编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
