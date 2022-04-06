@@ -114,6 +114,8 @@ jobs:
       - name: 修改 jumkey.dtb 并再编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p'
         run: |
+          ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
+          ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
           cd custom/extensions/jumkey.dtb
           ls
           chmod +x dtc
