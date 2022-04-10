@@ -160,6 +160,7 @@ jobs:
           ls cache
           #rm -rfv cache/*.pat
           #mv cache/*.pat.orig cache/*.pat
+          ./redpill_tool_chain.sh clean ${{matrix.platform}}-${{matrix.version}}
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
