@@ -155,8 +155,8 @@ jobs:
       - name: Build jumkey.dtb
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
-           rm -rfv images/redpill-*.img
-           rm -rfv custom/extensions/redpill-boot-wait
+           sudo rm -rfv images/redpill-*.img
+           sudo rm -rfv custom/extensions/redpill-boot-wait
            #rm -rfv cache/*
            ./redpill_tool_chain.sh clean ${{matrix.platform}}-${{matrix.version}}
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
