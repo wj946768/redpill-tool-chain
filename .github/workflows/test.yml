@@ -126,9 +126,14 @@ jobs:
       - name: 添加 jumkey.dtb !!!Create your own device tree binary!!!
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
-          #$./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
+          ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
           echo '!!!Create your own device tree binary!!!'
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
+          echo '1'
+          ls custom/extensions/redpill-dtb
+          echo '2'
+          ls custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+          echo '3'
           sudo svn export https://github.com/pocopico/redpill-load/trunk/redpill-dtb/recipes custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           sudo svn export https://github.com/pocopico/redpill-load/trunk/redpill-dtb/releases custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
