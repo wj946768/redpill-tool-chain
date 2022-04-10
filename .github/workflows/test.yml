@@ -78,7 +78,7 @@ jobs:
 
       - name: 准备构建环境
         run: |
-          sed -i -e 'brp_verify_file_sha256/#brp_verify_file_sha256/g' docker/helper.sh
+          sed -i -e 's/brp_verify_file_sha256/#brp_verify_file_sha256/g' docker/helper.sh
           cat docker/helper.sh
           ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
 
