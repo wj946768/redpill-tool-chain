@@ -137,7 +137,8 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
           ls custom/extensions
-          cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+          cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+          #cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           sudo chmod -R 777 ./
           sudo chmod +x dtc
           ls
@@ -145,7 +146,7 @@ jobs:
           # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
           grep -C 2 -rn '00:1e.0,01.0,07.0' output.dts
           grep -C 2 -rn '00:13.0,00.0' output.dts
-          sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
+          sed -i -e 's/"00:13.0,00.0"/"00:04.0"/g' output.dts
           rm -rf model_ds920p.dtb
           ./dtc -I dts -O dtb -o model_ds920p.dtb output.dts
           
