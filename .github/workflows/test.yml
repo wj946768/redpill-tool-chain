@@ -144,8 +144,7 @@ jobs:
           ls
           ./dtc -I dtb -O dts -o output.dts model_ds920p.dtb
           # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
-          grep -C 2 -rn '00:1e.0,01.0,07.0' output.dts
-          #grep -C 2 -rn '00:13.0,00.0' output.dts
+          cat output.dts
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
           rm -rf model_ds920p.dtb
           ./dtc -I dts -O dtb -o model_ds920p.dtb output.dts
