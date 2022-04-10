@@ -151,7 +151,7 @@ jobs:
            rm -rf model_${{matrix.platform}}.dtb
            ./dtc -I dts -O dtb -o model_${{matrix.platform}}.dtb output.dts
            rm -rfv images/redpill-*.img
-           sudo mv cache/ds920p_42661.pat.orig cache/ds920p_42661.pat
+           sudo mv cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat.orig cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
