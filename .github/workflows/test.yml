@@ -56,6 +56,14 @@ jobs:
           - platform: dva3221
             version: 7.0.1-42218
 
+    # https://github.com/marketplace/actions/substring-action substract version for dtb folder
+    steps:
+      - uses: bhowell2/github-substring-action
+        id: subver
+        with:
+          value: ${{matrix.version}}
+          index_of_str: "-"
+
     steps:
       - name: 检出项目文件
         uses: actions/checkout@v2
@@ -128,11 +136,14 @@ jobs:
       - name: 修改 jumkey.dtb for Unraid. Unraid第一个Sata虚拟盘在00:04.0
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
-          cd custom/extensions/jumkey.dtb/${{matrix.platform}}_42218
+          cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           sudo chmod -R 777 ./
           sudo chmod +x dtc
           ls
           ./dtc -I dtb -O dts -o output.dts model_ds920p.dtb
+          # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
+          grep -C 2 -rn '00:1e.0,01.0,07.0' output.dts
+          grep -C 2 -rn '00:13.0,00.0' output.dts
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
           rm -rf model_ds920p.dtb
           ./dtc -I dts -O dtb -o model_ds920p.dtb output.dts
