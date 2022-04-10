@@ -126,15 +126,17 @@ jobs:
       - name: 添加 jumkey.dtb !!!Create your own device tree binary!!!
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
-          ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
+          #$./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
           echo '!!!Create your own device tree binary!!!'
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
+          sudo svn export https://github.com/pocopico/redpill-load/trunk/redpill-dtb/recipes custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           sudo svn export https://github.com/pocopico/redpill-load/trunk/redpill-dtb/releases custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           #cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           sudo chmod -R 777 ./
           sudo chmod +x dtc
           ls
+          mv universal.json ${{matrix.platform}}_${{steps.subver.outputs.substring}}.json
           ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
           # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
