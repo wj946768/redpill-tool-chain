@@ -78,6 +78,8 @@ jobs:
 
       - name: 准备构建环境
         run: |
+          sed -i -e 's/pr_process_ok/cat "${BRP_REL_CONFIG_JSON}"\npr_process_ok/g' docker/helper.sh
+          cat docker/helper.sh
           ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
 
       - name: 配置引导镜像
