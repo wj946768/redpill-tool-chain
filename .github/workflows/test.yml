@@ -138,12 +138,12 @@ jobs:
           sudo chmod -R 777 ./
           sudo chmod +x dtc
           ls
-          ./dtc -I dtb -O dts -o output.dts model_ds920p.dtb
+          ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
           # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
           cat output.dts
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
-          rm -rf model_ds920p.dtb
-          ./dtc -I dts -O dtb -o model_ds920p.dtb output.dts
+          rm -rf model_${{matrix.platform}}.dtb
+          ./dtc -I dts -O dtb -o model_${{matrix.platform}}.dtb output.dts
           sudo chmod -R 555 ./
 
       - name: 编译引导镜像
