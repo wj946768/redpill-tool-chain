@@ -156,7 +156,7 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
            rm -rfv images/redpill-*.img
-           rm -rfv cache/*
+           #rm -rfv cache/*
            ./redpill_tool_chain.sh clean ${{matrix.platform}}-${{matrix.version}}
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
