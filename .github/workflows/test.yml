@@ -156,7 +156,7 @@ jobs:
         run: |
            rm -rfv images/redpill-*.img
            ls cache
-           sudo mv cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat.orig cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat
+           sudo mv cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat.org cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat
            ls cache
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
