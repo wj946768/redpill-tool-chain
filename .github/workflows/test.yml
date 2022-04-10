@@ -131,8 +131,13 @@ jobs:
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
 
       - name: 编译引导镜像
-        run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
+        if: !(matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p')
+            run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
+      - name: jumkey.dtb 编译
+        if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
+            run: ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
+            
       - name: 修改 jumkey.dtb for Unraid. Unraid第一个Sata虚拟盘在00:04.0
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
@@ -153,11 +158,10 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
           echo "May pack twice"
-          rm -rf images/redpill-*.img
-          echo "May verify failed."
-          ls cache
-          rm -rf cache/*
-
+          rm -rfv images/redpill-*.img
+          #echo "May verify failed."
+          #ls cache
+          #rm -rfv cache
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
