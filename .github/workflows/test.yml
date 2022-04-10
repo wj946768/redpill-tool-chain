@@ -155,9 +155,7 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
            rm -rfv images/redpill-*.img
-           ls cache
-           sudo mv cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat.org cache/${{matrix.platform}}_${{steps.subver.outputs.substring}}.pat
-           ls cache
+           rm -rfv cache/*
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
