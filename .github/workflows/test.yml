@@ -146,7 +146,13 @@ jobs:
       - name: 编译引导镜像
         run: |
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
-           ls custom/extensions
+           ls custom/extensions/redpill-dtb
+           cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+           sudo chmod -R 777 ./
+           sudo chmod +x dtc
+           ls
+           ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
+           cat output.dts
         
       - name: 上传引导镜像到 github actions
         uses: actions/upload-artifact@v2
