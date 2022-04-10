@@ -132,11 +132,11 @@ jobs:
 
       - name: 编译引导镜像
         if: !(matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p')
-            run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
+        run: ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
       - name: jumkey.dtb 编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
-            run: ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
+        run: ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
             
       - name: 修改 jumkey.dtb for Unraid. Unraid第一个Sata虚拟盘在00:04.0
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
