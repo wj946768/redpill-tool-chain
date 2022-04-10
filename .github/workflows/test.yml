@@ -155,8 +155,8 @@ jobs:
           echo "May pack twice"
           rm -rf images/redpill-*.img
           echo "May verify failed."
-          ls /opt/redpill-load/cache
-          rm -rf /opt/redpill-load/cache
+          ls cache
+          rm -rf cache/*
 
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
