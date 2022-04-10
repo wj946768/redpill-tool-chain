@@ -157,8 +157,7 @@ jobs:
         run: |
            sudo rm -rfv images/redpill-*.img
            sudo rm -rfv custom/extensions/redpill-boot-wait
-           #rm -rfv cache/*
-           ./redpill_tool_chain.sh clean ${{matrix.platform}}-${{matrix.version}}
+           sudo rm -rfv cache/*
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
