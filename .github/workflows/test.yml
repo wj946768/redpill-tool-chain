@@ -158,8 +158,7 @@ jobs:
           ls cache
           #rm -rfv cache/*.pat
           #mv cache/*.pat.orig cache/*.pat
-          ./redpill_tool_chain.sh clean ${{matrix.platform}}-${{matrix.version}}
-          ls custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+          sed -i -e 's/local EXPECTED_SHA256="${2}"/local EXPECTED_SHA256=$(sha256sum ${FILE})/g' ./redpill_tool_chain.sh
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
