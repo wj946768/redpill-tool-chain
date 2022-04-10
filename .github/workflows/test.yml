@@ -56,17 +56,17 @@ jobs:
           - platform: dva3221
             version: 7.0.1-42218
 
-    # https://github.com/marketplace/actions/substring-action substract version for dtb folder
     steps:
+      - name: 检出项目文件
+        uses: actions/checkout@v2
+
+      # https://github.com/marketplace/actions/substring-action substract version for dtb folder
+      - name: 获得Sub version 
       - uses: bhowell2/github-substring-action
         id: subver
         with:
           value: ${{matrix.version}}
           index_of_str: "-"
-
-    steps:
-      - name: 检出项目文件
-        uses: actions/checkout@v2
 
       # - name: 缓存加速
       #   uses: actions/cache@v2
