@@ -129,6 +129,7 @@ jobs:
           #./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
           echo '!!!Create your own device tree binary!!!'
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
+          sudo cp custom/extensions/redpill-dtb.json custom/extensions/redpill-dtb/redpill-dtb.json
           sudo svn export https://github.com/pocopico/redpill-load/trunk/redpill-dtb/recipes custom/extensions/redpill-dtb
           sudo svn export https://github.com/pocopico/redpill-load/trunk/redpill-dtb/releases custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
