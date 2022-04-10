@@ -43,8 +43,8 @@ jobs:
           - platform: ds3622xsp
             version: 7.1.0-42661
 
-          - platform: ds920p
-            version: 7.0.1-42218
+          #- platform: ds920p
+          #  version: 7.0.1-42218
           - platform: ds920p
             version: 7.1.0-42661
 
@@ -153,6 +153,7 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
           rm -rf images/redpill-*.img
+          rm -rf /opt/redpill-load/cache/*.pat
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
