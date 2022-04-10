@@ -62,7 +62,7 @@ jobs:
 
       # https://github.com/marketplace/actions/substring-action substract version for dtb folder
       - name: 获得Subversion 
-        uses: bhowell2/github-substring-action
+        uses: bhowell2/github-substring-action@v1
         id: subver
         with:
           value: ${{matrix.version}}
