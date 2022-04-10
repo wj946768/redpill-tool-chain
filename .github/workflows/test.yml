@@ -152,8 +152,12 @@ jobs:
       - name: jumkey.dtb 再编译
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
+          echo "May pack twice"
           rm -rf images/redpill-*.img
-          rm -rf /opt/redpill-load/cache/*.pat
+          echo "May verify failed."
+          ls /opt/redpill-load/cache
+          rm -rf /opt/redpill-load/cache
+
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
         
       - name: 上传引导镜像到 github actions
