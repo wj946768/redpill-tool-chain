@@ -136,7 +136,7 @@ jobs:
           sudo chmod -R 777 ./
           sudo chmod +x dtc
           ls
-          mv ../universal.json ${{matrix.platform}}_${{steps.subver.outputs.substring}}.json
+          sudo mv ../universal.json ${{matrix.platform}}_${{steps.subver.outputs.substring}}.json
           ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
           # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
