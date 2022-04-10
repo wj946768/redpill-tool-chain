@@ -136,6 +136,7 @@ jobs:
       - name: 修改 jumkey.dtb for Unraid. Unraid第一个Sata虚拟盘在00:04.0
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
+          ls custom/extensions
           cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
           sudo chmod -R 777 ./
           sudo chmod +x dtc
