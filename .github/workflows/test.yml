@@ -2,6 +2,11 @@ name: 构建
 
 on:
   workflow_dispatch:
+    inputs:
+      clean_cache:
+        description: 'Clear caches'
+        required: false
+        type: boolean
   push:
     branches:
       - master
@@ -19,19 +24,15 @@ jobs:
       matrix:
         include:
           #  两行一组，删除不需要的版本
-          #- platform: ds3615xs
-          #  version: 6.2.4-25556
+          - platform: ds1621p
+            version: 7.0.1-42218
+          - platform: ds1621p
+            version: 7.1.0-42661
+
           - platform: ds3615xs
             version: 7.0.1-42218
           # - platform: ds3615xs
           #   version: 7.1.0-42661
-
-          #- platform: ds918p
-          #  version: 6.2.4-25556
-          - platform: ds918p
-            version: 7.0.1-42218
-          - platform: ds918p
-            version: 7.1.0-42661
 
           - platform: ds3617xs
             version: 7.0.1-42218
@@ -43,22 +44,26 @@ jobs:
           - platform: ds3622xsp
             version: 7.1.0-42661
 
-          #- platform: ds920p
-          #  version: 7.0.1-42218
-          - platform: ds920p
+          - platform: ds918p
+            version: 6.2.4-25556
+          - platform: ds918p
+            version: 7.0.1-42218
+          - platform: ds918p
             version: 7.1.0-42661
 
-          - platform: ds1621p
+          - platform: ds920p
             version: 7.0.1-42218
-          - platform: ds1621p
+          - platform: ds920p
             version: 7.1.0-42661
 
           - platform: dva3221
             version: 7.0.1-42218
+          - platform: dva3221
+            version: 7.1.0-42661
 
     steps:
       - name: 检出项目文件
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # https://github.com/marketplace/actions/substring-action substract version for dtb folder
       - name: 获得Subversion 
@@ -68,24 +73,32 @@ jobs:
           value: ${{matrix.version}}
           index_of_str: "-"
 
-      # - name: 缓存加速
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: |
-      #       cache/*.pat
-      #       docker/downloads/*.txz
-      #     key: ${{matrix.platform}}-${{matrix.version}}-${{ hashFiles('global_config.json') }}
+      - name: 缓存加速
+        uses: actions/cache@v3
+        with:
+          path: |
+            cache/*.pat
+            cache/*.org
+            docker/downloads/*.txz
+          key: ${{matrix.platform}}-${{matrix.version}}-${{ hashFiles('global_config.json') }}
+          restore-keys: ${{matrix.platform}}-${{matrix.version}}-
+
+      - name: 清理缓存
+        if: "${{ github.event.inputs.clean_cache == 'true' }}"
+        run: |
+          rm -rf cache/*.pat
+          rm -rf cache/*.org
+          rm -rf docker/downloads/*.txz
 
       - name: 准备构建环境
         run: |
-          sed -i -e 's/brp_verify_file_sha256/#brp_verify_file_sha256/g' docker/helper.sh
           ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
 
       - name: 配置引导镜像
         run: |
           cp sample_user_config.json ${{matrix.platform}}_user_config.json
 
-          # 调整VID和PID, PVE or Unraid don't need this.
+          # 调整VID和PID
           # sed -i -e 's/0x0001/0x88AA/g' -e 's/0x46f4/0x88AA/g' ${{matrix.platform}}_user_config.json
 
           # 调整SN和MAC,最好使用 actions secrets 引入,SN应该是固定值不应该每次生成
@@ -106,7 +119,7 @@ jobs:
           ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
           ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-acpid.json
           ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-virtio.json
-          # Network driver
+		  # Network driver
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json
 
       #- name: 添加扩展驱动[r8152]
@@ -133,8 +146,8 @@ jobs:
 
       - name: 编译引导镜像
         run: |
-           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
-           
+          ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
+
       - name: Modify jumkey.dtb
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
@@ -159,9 +172,9 @@ jobs:
            sudo rm -rfv custom/extensions/redpill-boot-wait
            sudo rm -rfv cache/*
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
-        
+
       - name: 上传引导镜像到 github actions
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dsm-${{matrix.platform}}-${{matrix.version}}
           path: images/redpill-*.img
@@ -170,7 +183,5 @@ jobs:
       - name: 删除旧的工作流
         uses: Mattraks/delete-workflow-runs@v2
         with:
-          token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          retain_days: 3
-          keep_minimum_runs: 6
+          retain_days: 1
+          keep_minimum_runs: 3
