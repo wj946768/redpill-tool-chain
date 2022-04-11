@@ -29,15 +29,15 @@ jobs:
           - platform: ds1621p
             version: 7.1.0-42661
 
-          #- platform: ds3615xs
-          #  version: 7.0.1-42218
           - platform: ds3615xs
-            version: 7.1.0-42661
+            version: 7.0.1-42218
+          #- platform: ds3615xs
+          #  version: 7.1.0-42661
 
-          #- platform: ds3617xs
-          #  version: 7.0.1-42218
           - platform: ds3617xs
-            version: 7.1.0-42661
+            version: 7.0.1-42218
+          #- platform: ds3617xs
+          #  version: 7.1.0-42661
 
           #- platform: ds3622xsp
           #  version: 7.0.1-42218
@@ -168,7 +168,7 @@ jobs:
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
            sudo rm -rfv images/redpill-*.img
-           #sudo rm -rfv custom/extensions/redpill-boot-wait
+           sudo rm -rfv custom/extensions/redpill-boot-wait
            sudo rm -rfv cache/*
            ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
