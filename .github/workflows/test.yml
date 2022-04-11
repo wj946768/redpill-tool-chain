@@ -31,13 +31,13 @@ jobs:
 
           #- platform: ds3615xs
           #  version: 7.0.1-42218
-           - platform: ds3615xs
-             version: 7.1.0-42661
+          - platform: ds3615xs
+            version: 7.1.0-42661
 
           #- platform: ds3617xs
           #  version: 7.0.1-42218
-           - platform: ds3617xs
-             version: 7.1.0-42661
+          - platform: ds3617xs
+            version: 7.1.0-42661
 
           #- platform: ds3622xsp
           #  version: 7.0.1-42218
