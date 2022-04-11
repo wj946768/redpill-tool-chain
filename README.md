@@ -8,6 +8,12 @@
 
 感谢 @haydibe 提供 RedPill Tool Chain
 
+## 关于此Fork
+1. 这个Fork是个人用来建立Unraid里面的虚拟机的。所以VID和PID都是没改过的0x0001和0x46f4。 这个主要是用在虚拟机的。PVE和ESXI应该也能用。
+2. 加了r8125的2.5G网卡驱动， r8152的USB2.5G网卡似乎上游pocopico库不好用，没识别出来，还得靠套件驱动，也不稳定。注释在里面了。
+3. 在Workflow的Action里面自动修改dtb，以支持DS920+等型号。不过这些型号网上没有洗白码买，建议还是用DS918+。
+4. dtb中将pci硬盘的地址改成了00:04.0。 这个一般Unraid中第一个虚拟Sata硬盘就是这个位置。如果是别的硬盘位置，可以改Action里面的脚本。
+
 ## 关于项目?
 
 - 基于[RedPill-TTG](https://github.com/RedPill-TTG)源码制作
