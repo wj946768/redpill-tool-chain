@@ -117,7 +117,7 @@ jobs:
       - name: 添加扩展驱动
         if: matrix.platform != 'dva3221'
         run: |
-          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-boot-wait/rpext-index.json
+          ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-acpid/rpext-index.json
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-virtio/rpext-index.json
           # Network driver
@@ -132,7 +132,7 @@ jobs:
         if: matrix.platform == 'dva3221'
         run: |
           echo '等待整理兼容性扩展~😀'
-          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-boot-wait/rpext-index.json
+          ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
 
       - name: 添加 Misc shell
         run: |
