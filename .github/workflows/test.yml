@@ -7,6 +7,16 @@ on:
         description: 'Clear caches'
         required: false
         type: boolean
+        
+      type_VM:
+        description: 'Q35 or i440fx type of VM in Unraid'
+        required: true
+        default: Q35
+        type: choice
+        options:
+        - Q35
+        - i440fx
+        
   push:
     branches:
       - master
@@ -91,7 +101,31 @@ jobs:
           rm -rf cache/*.pat
           rm -rf cache/*.org
           rm -rf docker/downloads/*.txz
-
+    
+      # 第一个盘为虚拟的SATA盘。
+      - name: Variable
+        id: var
+        run: |
+          case ${{ github.event.inputs.type_VM }} in
+            Q35)
+                _SataPM="6"
+                _DiskIM="00"
+                _dtbValue="00:1f.2"
+                ;;
+            i440fx)
+                _SataPM="62"
+                _DiskIM="0002"
+                _dtbValue="00:04.0"
+                ;;
+            *)
+                echo "Wrong type of VM"
+                ;;
+          esac
+    
+          echo ::set-output name=SataPM::$_SataPM
+          echo ::set-output name=DiskIM::$_DiskIM
+          echo ::set-output name=dtbValue::$_dtbValue
+        
       - name: 准备构建环境
         run: |
           ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
@@ -108,7 +142,7 @@ jobs:
           sed -i -e "s/1234XXX123/${sn:="1130LWN123456"}/g" -e 's/XXYYXXYYXXYY/0011323D47F7/g' ${{matrix.platform}}_user_config.json
 
           # 添加第二张网卡mac并设置网卡数量
-          sed -i -e 's/0011323D47F7"/&,\n\t"mac2": "0011323D47F8",\n\t"SasIdxMap": "0",\n\t"SataPortMap": "62",\n\t"DiskIdxMap": "0002",\n\t"netif_num": 2/g' ${{matrix.platform}}_user_config.json
+          sed -i -e 's/0011323D47F7"/&,\n\t"mac2": "0011323D47F8",\n\t"SasIdxMap": "0",\n\t"SataPortMap": "${{ steps.var.outputs.SataPM }}",\n\t"DiskIdxMap": "${{ steps.var.outputs.DiskIM }}",\n\t"netif_num": 2/g' ${{matrix.platform}}_user_config.json
 
           # 调整synoinfo
           sed -i -e 's/"synoinfo": {},/"synoinfo": {\n\t"maxlanport": "2"\n    },/g' ${{matrix.platform}}_user_config.json
@@ -170,7 +204,7 @@ jobs:
            #ls          
            ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
            # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
-           sed -i -e 's/"00:1e.0,01.0,07.0"/"00:04.0"/g' output.dts
+           sed -i -e 's/"00:1e.0,01.0,07.0"/"${{ steps.var.outputs.dtbValue }}"/g' output.dts
            cat output.dts
            rm -rf model_${{matrix.platform}}.dtb
            ./dtc -I dts -O dtb -o model_${{matrix.platform}}.dtb output.dts
