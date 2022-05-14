@@ -16,14 +16,6 @@ on:
         options:
         - Q35
         - i440fx
-        
-  push:
-    branches:
-      - master
-    paths:
-      - "docker/**"
-      - "**.sh"
-      - "**.json"
 
 jobs:
   build:
