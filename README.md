@@ -30,7 +30,6 @@
 
 如果您发现工具链的构建方式有问题或者有改进的想法，请让我知道。
 
-对于所有其他问题：请向[社区ddr](https://xpenology.com/forum/forum/35-developer-discussion-room/)提出——我知道的并不比其他人多。
 
 ## 如何使用?
 
