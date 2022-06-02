@@ -4,7 +4,7 @@
 
 这是一个测试项目，可能会有不可预测的事情发生（比如：毁损数据、烧毁硬件等等），请**谨慎使用**。
 
-[English](README_en.md "English")
+[English](README_EN.md "English")
 
 感谢 @haydibe 提供 RedPill Tool Chain
 
@@ -48,6 +48,17 @@
 自定义驱动请按需添加，尽量不要加载无关驱动，否则会因为扩展驱动太大导致打包失败。
 
 依赖: `docker`
+
+---
+⚠️⚠️⚠️
+由于各版本环境不完全一致，制作策略会有细节变化，具体可以参考 [工作流配置文件](https://github.com/tossp/redpill-tool-chain/blob/master/.github/workflows/test.yml)
+
+在 [Gtihub Actions](https://github.com/tossp/redpill-tool-chain/actions) 中查看执行结果，并下载生成的镜像
+
+❗❗❗
+[工作流配置文件](https://github.com/tossp/redpill-tool-chain/blob/master/.github/workflows/test.yml) 中引入的扩展都是推荐必装扩展
+
+---
 
 ## 快捷说明
 
@@ -118,12 +129,13 @@ Actions: build, auto, run, clean, add, del, sn, pat
             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
             eg: sn ds920p
 
-- pat:      For decoding PAT file. see: https://github.com/tossp/redpill-tool-chain/blob/master/.github/workflows/pat.yml
+- pat:      For decoding PAT file.
 
 Available platform versions:
 ---------------------
 ds1621p-7.0.1-42218
 ds1621p-7.1.0-42661
+ds2422p-7.0.1-42218
 ds3615xs-6.2.4-25556
 ds3615xs-7.0.1-42218
 ds3615xs-7.1.0-42661
