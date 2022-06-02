@@ -58,7 +58,7 @@ jobs:
             version: latest
             platform: x64
             
-      - name: Copy Unraid patch and Adjust ACS
+      - name: Copy Source
         run: |
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /tmp/r8125
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /tmp/r8152
