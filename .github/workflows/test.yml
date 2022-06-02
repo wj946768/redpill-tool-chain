@@ -43,13 +43,13 @@ jobs:
 
           #- platform: ds3617xs
           #  version: 7.0.1-42218
-          - platform: ds3617xs
-            version: 7.1.0-42661
+          #- platform: ds3617xs
+          #  version: 7.1.0-42661
 
           #- platform: ds3622xsp
           #  version: 7.0.1-42218
-          - platform: ds3622xsp
-            version: 7.1.0-42661
+          #- platform: ds3622xsp
+          #  version: 7.1.0-42661
 
           #- platform: ds918p
           #  version: 6.2.4-25556
@@ -65,8 +65,8 @@ jobs:
 
           #- platform: dva3221
           #  version: 7.0.1-42218
-          - platform: dva3221
-            version: 7.1.0-42661
+          #- platform: dva3221
+          #  version: 7.1.0-42661
 
     steps:
       - name: 检出项目文件
