@@ -82,7 +82,7 @@ jobs:
         working-directory: /usr/src/linux
         run: |
           sudo make oldconfig
-          sudo sed -i -e 's/CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"/CONFIG_SYSTEM_TRUSTED_KEYS=""/g' .config
+          sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
           cat .config
       
       - name: Make Prepare
