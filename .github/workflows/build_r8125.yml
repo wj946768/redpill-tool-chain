@@ -64,9 +64,32 @@ jobs:
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /tmp/r8152
          sudo patch -d /tmp/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
 
+      - name: Make Config
+        working-directory: /usr/src/linux
+        run: |
+          sudo make oldconfig
+      
+      - name: Make Prepare
+        working-directory: /usr/src/linux
+        run: |
+          sudo make -j`nproc` modules_prepare
+      
+      - name: Compile Unraid
+        working-directory: /usr/src/linux
+        run: |
+          sudo make -j`nproc` bzImage;sudo make -j`nproc`;sudo make -j`nproc` modules        
+      
+      - name: Make modules
+        working-directory: /usr/src/linux
+        run: |
+          sudo make INSTALL_MOD_STRIP=1 modules_install
+        
       - name: Compile drivers
         working-directory: /tmp
         run: |
+          echo "Start"
+          ls /lib/modules/
+          echo "End"
           Linux_VERSION=${{ steps.var.outputs.UKernel }}
           cd /tmp/r8125
           sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src modules
