@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     env:
-      Linux_VERSION: "4.4.180"
+      Linux_VERSION: 4.4.180
 
     steps:
       - name: Clone Repository
@@ -59,7 +59,7 @@ jobs:
             platform: x64
             
       - name: Copy Unraid patch and Adjust ACS
-       run: |
+        run: |
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /tmp/r8125
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /tmp/r8152
          sudo patch -d /tmp/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
