@@ -149,13 +149,17 @@ jobs:
           ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-acpid/rpext-index.json
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-virtio/rpext-index.json
-          # Network driver
-          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json
 
-      #- name: 添加扩展驱动[r8152]
-      #  if: matrix.platform == 'ds3615xs' || matrix.platform == 'ds918p' || matrix.platform == 'ds3622xsp'
-      #  run: |
-      #    ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/rpext-index.json
+      - name: 添加扩展驱动[r8125]
+        if: matrix.platform != 'ds920p' && matrix.platform != 'ds918p'
+        run: |
+          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json
+          
+      - name: 添加扩展驱动[r8125 and r8152]
+        if: matrix.platform == 'ds920p' || matrix.platform == 'ds918p'
+        run: |
+          ./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/pocopico-r8125.json
+          ./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/pocopico-r8152.json
           
       - name: 添加扩展驱动[dva3221]
         if: matrix.platform == 'dva3221'
