@@ -1,0 +1,17 @@
+{
+  "id": "pocopico.r8152",
+  "url": "https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/pocopico-r8152.json",
+  "info": {
+    "name": "r8152",
+    "description": "Adds Realtek RTL8152 USB 2.5Gigabit Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/r8152",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds918p_42621": "https://github.com/jinlife/redpill-tool-chain/raw/main/extensions/r8152/releases/ds918p_42218.json",
+    "ds918p_42661": "https://github.com/jinlife/redpill-tool-chain/raw/main/extensions/r8152/releases/ds918p_42218.json",
+    "ds920p_42621": "https://github.com/jinlife/redpill-tool-chain/raw/main/extensions/r8152/releases/ds918p_42218.json",
+    "ds920p_42661": "https://github.com/jinlife/redpill-tool-chain/raw/main/extensions/r8152/releases/ds918p_42218.json"
+  }
+}
