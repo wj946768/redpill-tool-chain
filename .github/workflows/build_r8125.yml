@@ -90,7 +90,7 @@ jobs:
         run: |
           sudo make -j`nproc` modules_prepare
       
-      - name: Compile Unraid
+      - name: Compile Linux
         working-directory: /usr/src/linux
         run: |
           sudo make -j`nproc` bzImage;sudo make -j`nproc`;sudo make -j`nproc` modules        
@@ -116,14 +116,14 @@ jobs:
           sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src INSTALL_MOD_STRIP=1 INSTALL_MOD_DIR=kernel/drivers/net/usb/ modules_install
           ls /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/
 
-      - name: Compile Unraid with modules
+      - name: Find files
         run: |
           Linux_VERSION=${{ steps.var.outputs.UKernel }}
           sudo rm -rf ./artifact
           sudo mkdir -p ./artifact
           sudo chmod -R 777 ./artifact
-          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/ethernet/realtek/r8125.ko.xz ./artifact/r8125.ko.xz
-          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/r8152.ko.xz ./artifact/r8152.ko.xz        
+          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/ethernet/realtek/r8125.ko ./artifact/r8125.ko
+          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/r8152.ko ./artifact/r8152.ko        
 
       - name: Upload github actions
         uses: actions/upload-artifact@v3
