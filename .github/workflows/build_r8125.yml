@@ -48,7 +48,8 @@ jobs:
           Linux_VERSION=${{ steps.var.outputs.UKernel }}
           sudo wget "https://cdn.kernel.org/pub/linux/kernel/v${Linux_VERSION:0:1}.x/linux-${Linux_VERSION}.tar.xz"
           sudo tar -C /usr/src/ -xf linux-${Linux_VERSION}.tar.xz
-          #sudo ln -sf /usr/src/linux-${Linux_VERSION} /usr/src/linux
+          ls /usr/src/
+          sudo ln -sf /usr/src/linux-${Linux_VERSION} /usr/src/linux
           name_tag=${Linux_VERSION}-r$(date +%g.%j)
           echo ::set-output name=release_tag::$name_tag
 
