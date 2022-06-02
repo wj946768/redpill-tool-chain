@@ -1,0 +1,100 @@
+name: 构建
+
+on:
+  workflow_dispatch:
+    inputs:     
+      type_VM:
+        description: '918 or 920 type of Synology'
+        required: true
+        default: 918
+        type: choice
+        options:
+        - 918
+        - 920
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    env:
+      Linux_VERSION: "4.4.180"
+      
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+        with:
+            ref: master
+  
+      # Linux version
+      - name: Variable
+        id: var
+        run: |
+          case ${{ github.event.inputs.type_VM }} in
+            918)
+                _Linux_VERSION="4.4.180"
+                ;;
+            920)
+                _Linux_VERSION="4.4.180"
+                ;;
+            *)
+                echo "Wrong type of VM"
+                ;;
+          esac
+      
+          echo ::set-output name=UKernel::$_Linux_VERSION
+        
+      - name: Download and Extract Linux Kernel
+        id: co
+        run: |
+          Linux_VERSION=${{ steps.var.outputs.UKernel }}
+          sudo wget "https://cdn.kernel.org/pub/linux/kernel/v${Linux_VERSION:0:1}.x/linux-${Linux_VERSION}.tar.xz"
+          sudo tar -C /usr/src/ -xf linux-${Linux_VERSION}.tar.xz
+          #sudo ln -sf /usr/src/linux-${Linux_VERSION} /usr/src/linux
+          name_tag=${Linux_VERSION}-r$(date +%g.%j)
+          echo ::set-output name=release_tag::$name_tag
+
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+            version: latest
+            platform: x64
+            
+      - name: Copy Unraid patch and Adjust ACS
+       run: |
+         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /tmp/r8125
+         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /tmp/r8152
+         sudo patch -d /tmp/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
+
+      - name: Compile drivers
+        working-directory: /tmp
+        run: |
+          Linux_VERSION=${{ steps.var.outputs.UKernel }}
+          cd /tmp/r8125
+          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src modules
+          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src INSTALL_MOD_STRIP=1 INSTALL_MOD_DIR=kernel/drivers/net/ethernet/realtek/ modules_install
+          ls /lib/modules/${Linux_VERSION}/kernel/drivers/net/ethernet/realtek/
+          cd /tmp/r8152
+          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src modules
+          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src INSTALL_MOD_STRIP=1 INSTALL_MOD_DIR=kernel/drivers/net/usb/ modules_install
+          ls /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/
+
+      - name: Compile Unraid with modules
+        run: |
+          Linux_VERSION=${{ steps.var.outputs.UKernel }}
+          sudo rm -rf ./artifact
+          sudo mkdir -p ./artifact
+          sudo chmod -R 777 ./artifact
+          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/ethernet/realtek/r8125.ko.xz ./artifact/r8125.ko.xz
+          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/r8152.ko.xz ./artifact/r8152.ko.xz        
+
+      - name: Upload github actions
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.co.outputs.release_tag }}
+          path: artifact/*
+          if-no-files-found: error
+
+      #- name: Delete old workflow
+      #  uses: Mattraks/delete-workflow-runs@v2
+      #  with:
+      #    retain_days: 1
+      #    keep_minimum_runs: 3
