@@ -1,0 +1,27 @@
+{
+  "mod_version": "v1",
+
+  "files": [
+    {
+      "name": "r8152-4.4.180plus.tgz",
+      "url": "https://raw.githubusercontent.com/jinlife/redpill-tool-chain/master/extensions/r8152/releases/r8152-4.4.180plus.tgz",
+      "sha256": "7ac379248038e6a5de3f0fca92ca8a246c48af4ea83d25a306ee74376cddd42c",
+      "packed": true
+    },
+    {
+      "name": "check-r8152.sh",
+      "url": "https://raw.githubusercontent.com/jinlife/redpill-tool-chain/master/extensions/r8152/src/check-r8152.sh",
+      "sha256": "6e9fb21b788773c286d7929c3dbbff07dc08686e7b80d7f8ff5bdf00a93f9490",
+      "packed": false
+    }
+  ],
+
+  "kmods": {
+    "r8152.ko": ""
+  },
+
+    "scripts": {
+    "on_boot": "check-r8152.sh"
+  }
+
+}

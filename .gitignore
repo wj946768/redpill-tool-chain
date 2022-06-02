@@ -1,4 +1,6 @@
 *.txz
 *.json
 !extensions/*.json
+!extensions/r8125/releases/*.json
+!extensions/r8152/releases/*.json
 !sample_user_config.json
