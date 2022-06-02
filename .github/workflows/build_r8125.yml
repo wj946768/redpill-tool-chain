@@ -77,11 +77,15 @@ jobs:
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /tmp/r8125
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /tmp/r8152
          sudo patch -d /tmp/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
+         cd /usr/src/linux
+         sudo find . -type f -iname '*.patch' -print0|xargs -n1 -0 patch -p 1 -i
 
       - name: Make Config
         working-directory: /usr/src/linux
         run: |
           sudo make oldconfig
+          sudo sed -i -e 's/CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"/CONFIG_SYSTEM_TRUSTED_KEYS=""/g' .config
+          cat .config
       
       - name: Make Prepare
         working-directory: /usr/src/linux
