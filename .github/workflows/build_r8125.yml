@@ -74,9 +74,8 @@ jobs:
          sudo rsync -aIv /build/r8152/  /toolkit/source/r8152/
          sudo rsync -aIv /build/r8125/  /toolkit/source/r8125/
          sudo chmod +x /toolkit/source/*
-
           
-      - name: Make
+      - name: Make complie
         working-directory: /toolkit
         run: |
           #chroot /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
@@ -86,7 +85,7 @@ jobs:
           #sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
           #cat .config
       
-      - name: Make Pakcage
+      - name: Make Package
         working-directory: /toolkit
         run: |
           sudo pkgscripts-ng/PkgCreate.py -c r8125
