@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: SynologyOpenSource/pkgscripts-ng
-          ref: DSM7.1
+          ref: DSM7.0
           path: pkgscripts-ng
         
       - name: Init build dependencies
@@ -52,17 +52,18 @@ jobs:
         run: |
          sudo mkdir -p /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}} /toolkit/source
          sudo rsync -aIv pkgscripts-ng/ /toolkit/pkgscripts-ng/
-         #cd /toolkit
-         #sudo pkgscripts-ng/EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
-         #sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
-         #sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.env.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
-         #sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.dev.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         cd /toolkit
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.env.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.dev.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
 
       # http://www.wolfteck.com/2019/03/02/packaging_rtl88x2bu_for_synology_nas/
       - name: ENV Prepare
         working-directory: /toolkit/pkgscripts-ng
         run: |
-          sudo ./EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
+          sudo ./EnvDeploy -v ${{matrix.version}} --list
+          sudo ./EnvDeploy -v ${{matrix.version}} --info platform
+          #sudo ./EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
           #sudo gpg --gen-key
           #sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
           
