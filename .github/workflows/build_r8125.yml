@@ -62,6 +62,7 @@ jobs:
         working-directory: /toolkit/pkgscripts-ng
         run: |
           sudo ./EnvDeploy -v ${{matrix.version}} --list
+          ls /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
           #sudo ./EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
           #sudo gpg --gen-key
           #sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
