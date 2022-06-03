@@ -73,10 +73,10 @@ jobs:
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /toolkit/source/r8125
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /toolkit/source/r8152
          sudo patch -d /toolkit/source/r8152/src -p1 -i /toolkit/source/r8152/patches/100-add-LED-configuration-from-OF.patch
-         sudo rsync -aIv ./build/r8152/  /toolkit/source/r8152/
-         sudo rsync -aIv ./build/r8125/  /toolkit/source/r8125/
          sudo rsync -aIv /toolkit/source/r8125/src/  /toolkit/source/r8125/
          sudo rsync -aIv /toolkit/source/r8152/src/  /toolkit/source/r8152/
+         sudo rsync -aIv ./build/r8152/  /toolkit/source/r8152/
+         sudo rsync -aIv ./build/r8125/  /toolkit/source/r8125/
          sudo chmod -R 777 /toolkit/source
          sudo chmod -R 777 ./build/
          ls ./build/
