@@ -11,7 +11,7 @@ on:
       type_VM:
         description: 'Q35 or i440fx type of VM in Unraid'
         required: true
-        default: Q35
+        default: i440fx
         type: choice
         options:
         - Q35
