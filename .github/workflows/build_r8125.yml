@@ -42,7 +42,7 @@ jobs:
           sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android/sdk /etc/mysql /etc/php /usr/local/share/boost
           [ -n "$AGENT_TOOLSDIRECTORY" ] && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           sudo -E apt-get update -y
-          sudo -E apt-get install -y python3 wget tar && ln -s /usr/bin/python3 /usr/local/bin/python
+          sudo -E apt-get install -y python3 wget tar pinentry && ln -s /usr/bin/python3 /usr/local/bin/python
           sudo -E apt-get clean
           git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
           df -h
@@ -65,9 +65,8 @@ jobs:
           sudo ./EnvDeploy -v ${{matrix.version}} --list
           ls /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
           #sudo ./EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
-          sudo gpg --gen-key
-          sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
-          
+      
+      # https://gist.github.com/woods/8970150
       - name: Copy Source
         run: |
          sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /toolkit/source/r8125
@@ -81,6 +80,8 @@ jobs:
          ./INFO.sh > INFO
          cd /toolkit/source/r8152
          ./INFO.sh > INFO
+         sudo gpg --batch --gen-key ./build/gen-key-script
+         sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
           
       #- name: Make complie
       #  working-directory: /toolkit
