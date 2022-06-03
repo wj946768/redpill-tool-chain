@@ -174,7 +174,8 @@ jobs:
       - name: 添加 jumkey.dtb !!!Create your own device tree binary!!!
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
-          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-dtb/rpext-index.json
+          ./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
+          #./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-dtb/rpext-index.json
           echo '!!!Create your own device tree binary!!!'
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
 
