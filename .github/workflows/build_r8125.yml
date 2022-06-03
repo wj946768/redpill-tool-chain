@@ -80,8 +80,8 @@ jobs:
          sudo chmod -R 777 /toolkit/source
          sudo chmod -R 777 ./build/
          ls ./build/
-         sudo ./build/gen-key.sh
-         sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
+         #sudo ./build/gen-key.sh
+         #sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
           
       - name: Make complie
         working-directory: /toolkit
