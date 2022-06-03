@@ -73,7 +73,7 @@ jobs:
          sudo patch -d /toolkit/source/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
          sudo rsync -aIv /build/r8152/  /toolkit/source/r8152/
          sudo rsync -aIv /build/r8125/  /toolkit/source/r8125/
-         sudo chmod +x /toolkit/source/*
+         sudo chmod -R 777 /toolkit/source
           
       - name: Make complie
         working-directory: /toolkit
