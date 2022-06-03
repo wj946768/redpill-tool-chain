@@ -53,9 +53,9 @@ jobs:
          sudo mkdir -p /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}} /toolkit/source
          sudo rsync -aIv pkgscripts-ng/ /toolkit/pkgscripts-ng/
          cd /toolkit
-         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
-         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.env.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
-         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.dev.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | sudo tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.env.txz | sudo tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.dev.txz | sudo tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
 
       # http://www.wolfteck.com/2019/03/02/packaging_rtl88x2bu_for_synology_nas/
       - name: ENV Prepare
@@ -74,7 +74,7 @@ jobs:
          sudo patch -d /toolkit/source/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
          sudo rsync -aIv /build/r8152/  /toolkit/source/r8152/
          sudo rsync -aIv /build/r8125/  /toolkit/source/r8125/
-         chmod +x /toolkit/source/*
+         sudo chmod +x /toolkit/source/*
 
           
       - name: Make
