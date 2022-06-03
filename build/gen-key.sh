@@ -1,5 +1,12 @@
 #!/bin/bash
 # Copyright (c) 2000-2017 Synology Inc. All rights reserved.
+
+export GPG_TTY=$(tty)
+echo "use-agent" > ~/.gnupg/gpg.conf
+echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf
+
+echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+
 gpg --batch --gen-key <<EOF
 Key-Type: 1
 Key-Length: 2048
