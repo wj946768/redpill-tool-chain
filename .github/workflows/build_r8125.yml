@@ -58,6 +58,7 @@ jobs:
          sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.dev.txz | sudo tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
 
       # http://www.wolfteck.com/2019/03/02/packaging_rtl88x2bu_for_synology_nas/
+      # http://dd-han.tw/2018/synology-development-emviroment-create
       - name: ENV Prepare
         working-directory: /toolkit/pkgscripts-ng
         run: |
@@ -76,22 +77,26 @@ jobs:
          sudo rsync -aIv ./build/r8152/  /toolkit/source/r8152/
          sudo rsync -aIv ./build/r8125/  /toolkit/source/r8125/
          sudo chmod -R 777 /toolkit/source
+         cd /toolkit/source/r8125
+         ./INFO.sh > INFO
+         cd /toolkit/source/r8152
+         ./INFO.sh > INFO
           
-      - name: Make complie
-        working-directory: /toolkit
-        run: |
-          #chroot /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
-          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8125
-          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8152
-          #sudo make oldconfig
-          #sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
-          #cat .config
+      #- name: Make complie
+      #  working-directory: /toolkit
+      #  run: |
+      #    #chroot /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
+      #    sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8125
+      #    sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8152
+      #    #sudo make oldconfig
+      #    #sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
+      #    #cat .config
       
       - name: Make Package
         working-directory: /toolkit
         run: |
-          sudo pkgscripts-ng/PkgCreate.py -c r8125
-          sudo pkgscripts-ng/PkgCreate.py -c r8152
+          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -c r8125
+          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -c r8152
       
       - name: Compile Linux
         working-directory: /toolkit
