@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2000-2017 Synology Inc. All rights reserved.
 
-source /toolkit/pkgscripts-ng/include/pkg_util.sh
+source /pkgscripts-ng/include/pkg_util.sh
 
 package="r8152"
 version="2.16.1"

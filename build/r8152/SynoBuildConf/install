@@ -7,7 +7,7 @@ rm -rf $PKG_DIR
 mkdir -p $PKG_DIR
 
 ### get spk packing functions
-source /toolkit/pkgscripts-ng/include/pkg_util.sh
+source /pkgscripts-ng/include/pkg_util.sh
 
 create_package_tgz() {
 	local package_tgz_dir=/tmp/_package_tgz
