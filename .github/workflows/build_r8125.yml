@@ -78,6 +78,8 @@ jobs:
          sudo rsync -aIv ./build/r8152/  /toolkit/source/r8152/
          sudo rsync -aIv ./build/r8125/  /toolkit/source/r8125/
          sudo chmod -R 777 /toolkit/source
+         sudo chmod -R 777 ./build/
+         ls ./build/
          sudo ./build/gen-key.sh
          sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
           
