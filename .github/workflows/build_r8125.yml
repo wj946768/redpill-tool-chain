@@ -12,9 +12,9 @@ jobs:
       matrix:
         include:
           - platform: apollolake
-            version: 7.1
+            version: 7.0
           - platform: geminilake
-            version: 7.1
+            version: 7.0
 
     steps:
       - name: Clone Repository
@@ -50,79 +50,67 @@ jobs:
       # https://github.com/cwuensch/SynoBuild
       - name: Download DSM toolkit
         run: |
-         sudo mkdir -p /toolkit/build_env/ds.x64-${{matrix.version}} /toolkit/source
+         sudo mkdir -p /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}} /toolkit/source
          sudo rsync -aIv pkgscripts-ng/ /toolkit/pkgscripts-ng/
-         cd /toolkit
-         sudo pkgscripts-ng/EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p x64
-         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | tar -xJhv -C build_env/ds.x64-${{matrix.version}}
-         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.x64-${{matrix.version}}.env.txz | tar -xJhv -C build_env/ds.x64-${{matrix.version}}
-         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.x64-${{matrix.version}}.dev.txz | tar -xJhv -C build_env/ds.x64-${{matrix.version}}
-         
-      - name: Copy Source
-        run: |
-         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /toolkit/source/r8125
-         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /toolkit/source/r8152
-         sudo patch -d /toolkit/source/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
+         #cd /toolkit
+         #sudo pkgscripts-ng/EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
+         #sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         #sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.env.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
+         #sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.${{matrix.platform}}-${{matrix.version}}.dev.txz | tar -xJhv -C build_env/ds.${{matrix.platform}}-${{matrix.version}}
 
       # http://www.wolfteck.com/2019/03/02/packaging_rtl88x2bu_for_synology_nas/
       - name: ENV Prepare
         working-directory: /toolkit/pkgscripts-ng
         run: |
-          sudo ./EnvDeploy -v ${{matrix.version}} -p ${{matrix.platform}}
-          sudo gpg --gen-key
-          sudo cp -r ~/.gnupg /toolkit/build_env/ds.x64-${{matrix.version}}/root/
+          sudo ./EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p ${{matrix.platform}}
+          #sudo gpg --gen-key
+          #sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
           
-      - name: Make Config
+      - name: Copy Source
+        run: |
+         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /toolkit/source/r8125
+         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /toolkit/source/r8152
+         sudo patch -d /toolkit/source/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
+         sudo rsync -aIv /build/r8152/  /toolkit/source/r8152/
+         sudo rsync -aIv /build/r8125/  /toolkit/source/r8125/
+         chmod +x /toolkit/source/*
+
+          
+      - name: Make
         working-directory: /toolkit
         run: |
-          sudo make oldconfig
-          sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
-          cat .config
+          #chroot /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
+          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8125
+          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8152
+          #sudo make oldconfig
+          #sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
+          #cat .config
       
-      - name: Make Prepare
+      - name: Make Pakcage
         working-directory: /toolkit
         run: |
-          sudo make -j`nproc` modules_prepare
+          sudo pkgscripts-ng/PkgCreate.py -c r8125
+          sudo pkgscripts-ng/PkgCreate.py -c r8152
       
       - name: Compile Linux
-        working-directory: /usr/src/linux
+        working-directory: /toolkit
         run: |
-          sudo make -j`nproc` bzImage;sudo make -j`nproc`;sudo make -j`nproc` modules        
+          echo 'root start'
+          ls
+          echo 'root end'
+          ls result_spk
       
-      - name: Make modules
-        working-directory: /usr/src/linux
-        run: |
-          sudo make INSTALL_MOD_STRIP=1 modules_install
-        
-      - name: Compile drivers
-        working-directory: /tmp
-        run: |
-          echo "Start"
-          ls /lib/modules/
-          echo "End"
-          Linux_VERSION=${{ steps.var.outputs.UKernel }}
-          cd /tmp/r8125
-          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src modules
-          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src INSTALL_MOD_STRIP=1 INSTALL_MOD_DIR=kernel/drivers/net/ethernet/realtek/ modules_install
-          ls /lib/modules/${Linux_VERSION}/kernel/drivers/net/ethernet/realtek/
-          cd /tmp/r8152
-          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src modules
-          sudo make -C /lib/modules/${Linux_VERSION}/build M=$PWD/src INSTALL_MOD_STRIP=1 INSTALL_MOD_DIR=kernel/drivers/net/usb/ modules_install
-          ls /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/
-
       - name: Find files
         run: |
-          Linux_VERSION=${{ steps.var.outputs.UKernel }}
           sudo rm -rf ./artifact
           sudo mkdir -p ./artifact
           sudo chmod -R 777 ./artifact
-          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/ethernet/realtek/r8125.ko ./artifact/r8125.ko
-          sudo cp /lib/modules/${Linux_VERSION}/kernel/drivers/net/usb/r8152.ko ./artifact/r8152.ko        
+          sudo cp /toolkit/result_spk/* ./artifact/ 
 
       - name: Upload github actions
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.co.outputs.release_tag }}
+          name: ds.${{matrix.platform}}-${{matrix.version}}
           path: artifact/*
           if-no-files-found: error
 
