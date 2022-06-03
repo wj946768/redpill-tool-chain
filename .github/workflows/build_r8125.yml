@@ -100,8 +100,8 @@ jobs:
       - name: Make Package
         working-directory: /toolkit
         run: |
-          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -c r8152
-          sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -c r8125          
+          sudo pkgscripts-ng/PkgCreate.py -v ${{matrix.version}} -p ${{matrix.platform}} -c r8152
+          sudo pkgscripts-ng/PkgCreate.py -v ${{matrix.version}} -p ${{matrix.platform}} -c r8125          
       
       - name: Compile Linux
         working-directory: /toolkit
