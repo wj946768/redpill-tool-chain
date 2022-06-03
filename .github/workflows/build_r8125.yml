@@ -2,46 +2,33 @@ name: Build_R8125
 
 on:
   workflow_dispatch:
-    inputs:     
-      type_VM:
-        description: '918 or 920 type of Synology'
-        required: true
-        default: 918
-        type: choice
-        options:
-        - 918
-        - 920
 
 jobs:
   build:
     runs-on: ubuntu-18.04
-    env:
-      Linux_VERSION: 4.4.180
+    name: Compile "${{matrix.platform}} ${{matrix.version}}"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: apollolake
+            version: 7.1
+          - platform: geminilake
+            version: 7.1
 
     steps:
       - name: Clone Repository
         uses: actions/checkout@v2
         with:
             ref: master
-  
-      # Linux version
-      - name: Variable
-        id: var
-        run: |
-          case ${{ github.event.inputs.type_VM }} in
-            918)
-                _Linux_VERSION="4.4.180"
-                ;;
-            920)
-                _Linux_VERSION="4.4.180"
-                ;;
-            *)
-                echo "Wrong type of VM"
-                ;;
-          esac
-      
-          echo ::set-output name=UKernel::$_Linux_VERSION
 
+      - name: Checkout toolkit repository
+        uses: actions/checkout@v2
+        with:
+          repository: SynologyOpenSource/pkgscripts-ng
+          ref: ${DSM_VERSION}
+          path: pkgscripts-ng
+        
       - name: Init build dependencies
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -55,38 +42,45 @@ jobs:
           sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android/sdk /etc/mysql /etc/php /usr/local/share/boost
           [ -n "$AGENT_TOOLSDIRECTORY" ] && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           sudo -E apt-get update -y
-          sudo -E apt-get install -y build-essential bison flex libssl-dev libelf-dev rsync asciidoc binutils bzip2 gawk git git-core  gettext libz-dev patch unzip upx autoconf automake libtool curl wget vim nano
-          wget -qO - https://raw.githubusercontent.com/friendlyarm/build-env-on-ubuntu-bionic/master/install.sh | sed 's/python-/python3-/g' | /bin/bash
+          sudo -E apt-get install -y python3 wget tar && ln -s /usr/bin/python3 /usr/local/bin/python
           sudo -E apt-get clean
           git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
           df -h
-        
-      - name: Download and Extract Linux Kernel
-        id: co
+
+      # https://github.com/cwuensch/SynoBuild
+      - name: Download DSM toolkit
         run: |
-          Linux_VERSION=${{ steps.var.outputs.UKernel }}
-          sudo wget "https://cdn.kernel.org/pub/linux/kernel/v${Linux_VERSION:0:1}.x/linux-${Linux_VERSION}.tar.xz"
-          sudo tar -C /usr/src/ -xf linux-${Linux_VERSION}.tar.xz
-          ls /usr/src/
-          sudo ln -sf /usr/src/linux-${Linux_VERSION} /usr/src/linux
-          name_tag=${Linux_VERSION}-r$(date +%g.%j)
-          echo ::set-output name=release_tag::$name_tag
-            
+         sudo mkdir -p /toolkit/build_env/ds.x64-${{matrix.version}} /toolkit/source
+         sudo rsync -aIv pkgscripts-ng/ /toolkit/pkgscripts-ng/
+         cd /toolkit
+         sudo pkgscripts-ng/EnvDeploy -t toolkit_tarballs -v ${{matrix.version}} -p x64
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/base_env-${{matrix.version}}.txz | tar -xJhv -C build_env/ds.x64-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.x64-${{matrix.version}}.env.txz | tar -xJhv -C build_env/ds.x64-${{matrix.version}}
+         sudo wget -qO- https://downloads.sourceforge.net/project/dsgpl/toolkit/DSM${{matrix.version}}/ds.x64-${{matrix.version}}.dev.txz | tar -xJhv -C build_env/ds.x64-${{matrix.version}}
+         
       - name: Copy Source
         run: |
-         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /tmp/r8125
-         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /tmp/r8152
-         sudo patch -d /tmp/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
+         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8125 /toolkit/source/r8125
+         sudo svn export https://github.com/jinlife/OpenWrt-Autobuild/trunk/r8152 /toolkit/source/r8152
+         sudo patch -d /toolkit/source/r8152/src -p1 -i /tmp/r8152/patches/100-add-LED-configuration-from-OF.patch
 
+      # http://www.wolfteck.com/2019/03/02/packaging_rtl88x2bu_for_synology_nas/
+      - name: ENV Prepare
+        working-directory: /toolkit/pkgscripts-ng
+        run: |
+          sudo ./EnvDeploy -v ${{matrix.version}} -p ${{matrix.platform}}
+          sudo gpg --gen-key
+          sudo cp -r ~/.gnupg /toolkit/build_env/ds.x64-${{matrix.version}}/root/
+          
       - name: Make Config
-        working-directory: /usr/src/linux
+        working-directory: /toolkit
         run: |
           sudo make oldconfig
           sudo sed -i -e 's#CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"#CONFIG_SYSTEM_TRUSTED_KEYS=""#g' .config
           cat .config
       
       - name: Make Prepare
-        working-directory: /usr/src/linux
+        working-directory: /toolkit
         run: |
           sudo make -j`nproc` modules_prepare
       
