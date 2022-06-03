@@ -79,16 +79,16 @@ jobs:
          sudo rsync -aIv ./build/r8125/  /toolkit/source/r8125/
          sudo chmod -R 777 /toolkit/source
          cd build
-         sudo gpg --batch --gen-key gen-key-script
+         sudo ./gen-key.sh
          sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
           
       - name: Make complie
         working-directory: /toolkit
         run: |
           cd /toolkit/source/r8125
-          ./INFO.sh > INFO
+          sudo ./INFO.sh > INFO
           cd /toolkit/source/r8152
-          ./INFO.sh > INFO
+          sudo ./INFO.sh > INFO
           #chroot /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}
           #sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8125
           #sudo pkgscripts-ng/PkgCreate.py -p ${{matrix.platform}} -I r8152
