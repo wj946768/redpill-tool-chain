@@ -2,6 +2,7 @@
 # Copyright (c) 2000-2017 Synology Inc. All rights reserved.
 
 export GPG_TTY=$(tty)
+mkdir -p ~/.gnupg/
 echo "use-agent" > ~/.gnupg/gpg.conf
 echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf
 
