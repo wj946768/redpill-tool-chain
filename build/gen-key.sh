@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2000-2017 Synology Inc. All rights reserved.
 
-#export GPG_TTY=$(tty)
+export GPG_TTY=$(tty)
 mkdir -p ~/.gnupg/
 chmod -R 777 ~/.gnupg/
 echo "use-agent" > ~/.gnupg/gpg.conf
