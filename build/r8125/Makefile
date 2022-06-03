@@ -19,7 +19,7 @@ all: modules spk_su
 modules: $(TARGET)
 
 $(TARGET):
-	$(MAKE) -C $(KSRC)/src M=$(PWD) modules
+	$(MAKE) -C $(KSRC) M=$(PWD) modules
 
 spk_su: spk_su.c
 	$(CROSS_COMPILE)cc -std=c99 -o $(@) $(<)
