@@ -174,8 +174,8 @@ jobs:
       - name: 添加 jumkey.dtb !!!Create your own device tree binary!!!
         if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
         run: |
-          #./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
-          ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/develop/redpill-dtb/rpext-index.json
+          ./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/redpill-dtb.json
+          #./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/develop/redpill-dtb/rpext-index.json
           echo '!!!Create your own device tree binary!!!'
           echo 'see https://github.com/jumkey/redpill-load/blob/develop/redpill-dtb/README.md'
 
@@ -192,30 +192,30 @@ jobs:
         run: |
           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
-      #- name: Modify jumkey.dtb
-      #  if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
-      #  run: |
-      #     echo 'redpill-dtb-dir'
-      #     ls custom/extensions
-      #     cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
-      #     #cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
-      #     sudo chmod -R 777 ./
-      #     sudo chmod +x dtc
-      #     #ls          
-      #     ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
-      #     # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
-      #     sed -i -e 's/"00:1e.0,01.0,07.0"/"${{ steps.var.outputs.dtbValue }}"/g' output.dts
-      #     cat output.dts
-      #     rm -rf model_${{matrix.platform}}.dtb
-      #     ./dtc -I dts -O dtb -o model_${{matrix.platform}}.dtb output.dts
-           
-      #- name: Build jumkey.dtb
-      #  if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
-      #  run: |
-      #     sudo rm -rfv images/redpill-*.img
-      #     sudo rm -rfv custom/extensions/redpill-boot-wait
-      #     sudo rm -rfv cache/*
-      #     ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
+      - name: Modify jumkey.dtb
+        if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
+        run: |
+           echo 'redpill-dtb-dir'
+           ls custom/extensions
+           cd custom/extensions/redpill-dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+           #cd custom/extensions/jumkey.dtb/${{matrix.platform}}_${{steps.subver.outputs.substring}}
+           sudo chmod -R 777 ./
+           sudo chmod +x dtc
+           #ls          
+           ./dtc -I dtb -O dts -o output.dts model_${{matrix.platform}}.dtb
+           # Jumkey "00:1e.0,01.0,07.0" pocopico "00:13.0,00.0"
+           sed -i -e 's/"00:1e.0,01.0,07.0"/"${{ steps.var.outputs.dtbValue }}"/g' output.dts
+           cat output.dts
+           rm -rf model_${{matrix.platform}}.dtb
+           ./dtc -I dts -O dtb -o model_${{matrix.platform}}.dtb output.dts
+          
+      - name: Build jumkey.dtb
+        if: matrix.platform == 'ds920p' || matrix.platform == 'ds1621p' || matrix.platform == 'ds2422p'
+        run: |
+           sudo rm -rfv images/redpill-*.img
+           sudo rm -rfv custom/extensions/redpill-boot-wait
+           sudo rm -rfv cache/*
+           ./redpill_tool_chain.sh auto ${{matrix.platform}}-${{matrix.version}}
 
       - name: 上传引导镜像到 github actions
         uses: actions/upload-artifact@v3
