@@ -3,4 +3,6 @@
 !extensions/*.json
 !extensions/r8125/releases/*.json
 !extensions/r8152/releases/*.json
+!redpill-dtb/*.json
+!redpill-dtb/recipes/*.json
 !sample_user_config.json
