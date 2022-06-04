@@ -1,5 +1,5 @@
 {
-  "id": "jumkey.dtb",
+  "id": "redpill-dtb",
   "url": "https://github.com/jinlife/redpill-tool-chain/raw/master/redpill-dtb/rpext-index.json",
   "info": {
     "name": "Device tree binary",
