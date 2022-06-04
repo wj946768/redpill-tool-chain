@@ -9,7 +9,7 @@
 感谢 @haydibe 提供 RedPill Tool Chain
 
 ## 提示
-目前的Loader在安装时会自动升级到Update 1或Update 2. 之前Update 1还能用，现在群晖出了Update 2之后，安装后会进入恢复硬盘模式无限循环。进不了系统。
+目前的Loader在安装7.1.0.42661时会自动升级到Update 1或Update 2. 之前Update 1还能用，现在群晖出了Update 2之后，安装后会进入恢复硬盘模式无限循环。进不了系统。
 现在只能等上游Loader改改看能不能支持最新的Update 2. 或者在安装时断掉外网，让其升不了级，这样还是能装好的。
 
 ## 关于此Fork
