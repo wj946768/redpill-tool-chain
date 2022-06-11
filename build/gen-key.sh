@@ -11,7 +11,7 @@ echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
 
 echo RELOADAGENT | gpg-connect-agent
 
-gpg --batch --gen-key <<EOF
+gpg --gen-key --batch <<EOF
 Key-Type: 1
 Key-Length: 2048
 Subkey-Type: 1
@@ -19,4 +19,5 @@ Subkey-Length: 2048
 Name-Real: Root Jinlife
 Name-Email: root@handbook.westarete.com
 Expire-Date: 0
+Passphrase: Test1234~
 EOF

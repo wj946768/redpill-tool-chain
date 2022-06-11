@@ -82,7 +82,22 @@ jobs:
          ls ./build/
          #sudo ./build/gen-key.sh
          #sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
-          
+
+      - name: Generate key
+        run: |
+            cat <<-EOF > genkey
+                Key-Type: 1
+                Key-Length: 4096
+                Subkey-Type: 1
+                Subkey-Length: 4096
+                Name-Real: Testing name
+                Name-Email: test@test.org
+                Expire-Date: 0
+                %no-protection
+            EOF
+            gpg --gen-key --batch genkey
+            sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
+            
       #- name: Make complie
       #  working-directory: /toolkit
       #  run: |
@@ -101,7 +116,7 @@ jobs:
         working-directory: /toolkit
         run: |
           sudo pkgscripts-ng/PkgCreate.py -v ${{matrix.version}} -p ${{matrix.platform}} -c r8152
-          sudo pkgscripts-ng/PkgCreate.py -v ${{matrix.version}} -p ${{matrix.platform}} -c r8125          
+          sudo pkgscripts-ng/PkgCreate.py -v ${{matrix.version}} -p ${{matrix.platform}} -c r8125       
       
       - name: Compile Linux
         working-directory: /toolkit
