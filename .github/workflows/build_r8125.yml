@@ -93,9 +93,10 @@ jobs:
                 Name-Real: Testing name
                 Name-Email: test@test.org
                 Expire-Date: 0
+                Passphrase: Test1234~
                 %no-protection
             EOF
-            gpg --gen-key --batch genkey
+            sudo gpg --gen-key --batch genkey
             sudo cp -r ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
             
       #- name: Make complie
