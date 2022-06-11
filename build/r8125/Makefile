@@ -100,7 +100,7 @@ modules: $(TARGET)
 
 $(TARGET):
 	$(MAKE) -C $(KSRC) M=$(PWD) modules
-	find $(PWD) -name r8125.ko -exec $(STRIP) --strip-unneeded -x {} \;
+	find . -name r8125.ko -exec $(STRIP) --strip-unneeded -x {} \;
 
 spk_su: spk_su.c
 	$(CROSS_COMPILE)cc -std=c99 -o $(@) $(<)
