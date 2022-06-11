@@ -20,6 +20,7 @@ modules: $(TARGET)
 
 $(TARGET):
 	$(MAKE) -C $(KSRC) M=$(PWD) modules
+	find $(PWD) -name *.ko -exec strip --strip-unneeded -x {} \;
 
 spk_su: spk_su.c
 	$(CROSS_COMPILE)cc -std=c99 -o $(@) $(<)
