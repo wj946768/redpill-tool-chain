@@ -95,7 +95,7 @@ jobs:
                 %no-protection
             EOF
             sudo gpg --gen-key --batch genkey
-            sudo cp -rv ~/.gnupg/ /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
+            sudo rsync -aIv ~/.gnupg /toolkit/build_env/ds.${{matrix.platform}}-${{matrix.version}}/root/
             
       #- name: Make complie
       #  working-directory: /toolkit
