@@ -6,7 +6,7 @@ source /pkgscripts-ng/include/pkg_util.sh
 package="r8152"
 version="2.16.1"
 displayname="RTL8152/RTL8153 driver"
-maintainer="bb-qq"
+maintainer="jinlife"
 arch="$(pkg_get_platform)"
 install_type="package"
 thirdparty="yes"

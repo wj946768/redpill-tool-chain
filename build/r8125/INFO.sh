@@ -4,9 +4,9 @@
 source /pkgscripts-ng/include/pkg_util.sh
 
 package="r8125"
-version="9.009.01"
+version="9.009.02"
 displayname="RTL8125 driver"
-maintainer="bb-qq"
+maintainer="jinlife"
 arch="$(pkg_get_platform)"
 install_type="package"
 thirdparty="yes"
