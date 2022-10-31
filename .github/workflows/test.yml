@@ -117,9 +117,9 @@ jobs:
                 ;;
           esac
     
-          echo ::set-output name=SataPM::$_SataPM
-          echo ::set-output name=DiskIM::$_DiskIM
-          echo ::set-output name=dtbValue::$_dtbValue
+          echo "SataPM=$_SataPM" >> $GITHUB_OUTPUT
+          echo "DiskIM=$_DiskIM" >> $GITHUB_OUTPUT
+          echo "dtbValue=$_dtbValue" >> $GITHUB_OUTPUT
         
       - name: 准备构建环境
         run: |
