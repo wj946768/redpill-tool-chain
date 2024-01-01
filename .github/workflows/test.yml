@@ -67,6 +67,9 @@ jobs:
 #             version: 7.0.1-42218
           - platform: dva3221
             version: 7.1.0-42661
+            
+          - platform: dva1622
+            version: 7.1.0-42661
 
     steps:
       - name: 检出项目文件
@@ -146,7 +149,7 @@ jobs:
       - name: 添加扩展驱动
         if: matrix.platform != 'dva3221'
         run: |
-          ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
+          ./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-acpid/rpext-index.json
           ./redpill_tool_chain.sh add https://raw.githubusercontent.com/pocopico/redpill-load/master/redpill-virtio/rpext-index.json
 
@@ -165,7 +168,7 @@ jobs:
         if: matrix.platform == 'dva3221'
         run: |
           echo '等待整理兼容性扩展~😀'
-          ./redpill_tool_chain.sh add https://github.com/tossp/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
+          ./redpill_tool_chain.sh add https://github.com/jinlife/redpill-tool-chain/raw/master/extensions/redpill-boot-wait.json
 
       - name: 添加 Misc shell
         run: |
